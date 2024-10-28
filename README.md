@@ -10,7 +10,7 @@ This code should provide a state of the art data-handling and visualization of X
 ## Setup
 The Jupyter Notebook runs on Python 3, with `pandas`, `numpy`, `matplotlib` and `pathlib`.
 
-Additional requirements for the CoDAXRF_module: `scipy` and `scikit-learn`.
+Additional requirements for the CoDAXS_module: `scipy` and `scikit-learn`.
 
 Install the required packages:
 ```
