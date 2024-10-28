@@ -1,3 +1,4 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14001254.svg)](https://doi.org/10.5281/zenodo.14001254)
 
 # CoDAXS - Compositional Data Analysis from XRF scanning
 
