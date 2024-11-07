@@ -326,3 +326,50 @@ def kmeans_clustering(scores, elements_clr, n_clusters, colors, output_folder, o
         kmeans_clusters.to_csv(f"{kmeans_folder}/kmeans_clustering_labels.csv")
 
     return kmeans_clusters
+
+#Mean Element-CLR Deviation per Cluster
+def element_clr_deviation(elements_clr, clusters, colors, output_folder, output_format, savefig=True, bar_width=0.1, cluster_spacing=0.7, fontsize=10, figsize=(7, 4)):
+    global_means = elements_clr.mean()
+    elements_clusters = elements_clr.join(clusters)
+    cluster_means = elements_clusters.groupby('cluster').mean() - global_means
+
+    plt.figure(figsize=figsize)
+    num_columns = len(elements_clusters.columns[:-1])
+
+    for i, column in enumerate(elements_clusters.columns[:-1]):
+        for cluster_index in cluster_means.index:
+            bars = plt.bar(
+                cluster_index * cluster_spacing + bar_width * (i - num_columns / 2),
+                cluster_means.loc[cluster_index, column],
+                width=bar_width,
+                label=column if cluster_index == cluster_means.index[0] else "",
+                color=colors[cluster_index]
+            )
+            for bar in bars:
+                height = bar.get_height()
+                plt.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    height + (0.02 if height > 0 else -0.02),
+                    column,
+                    ha='center',
+                    va='bottom' if height > 0 else 'top',
+                    fontsize=fontsize
+                )
+
+    for spine in plt.gca().spines.values():
+        spine.set_visible(False)
+
+    plt.axhline(0, color='black', linewidth=0.8)
+    plt.ylabel("Element-clr Deviation from Overall Mean")
+    plt.title("Mean Element-clr Deviation per Cluster")
+    plt.xticks(
+        ticks=[i * cluster_spacing for i in cluster_means.index],
+        labels=[f"Cluster {int(i) + 1}" for i in cluster_means.index]
+    )
+    plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, _: f'{x:.1f}'))
+    for label in plt.gca().get_xticklabels():
+        label.set_y(-0.05)
+    plt.gca().tick_params(axis='x', which='both', length=0)
+    if savefig:
+        plt.savefig(f"{output_folder}/element_clr_deviation_cluster.{output_format}")
+    plt.show()
